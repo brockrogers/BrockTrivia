@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-  <EntityContainerMapping StorageEntityContainer="BrockTriviaModelStoreContainer" CdmEntityContainer="TrivaCtx">
+  <EntityContainerMapping StorageEntityContainer="BrockTriviaModelStoreContainer" CdmEntityContainer="TriviaCtx">
     <EntitySetMapping Name="Questions">
       <EntityTypeMapping TypeName="BrockTriviaModel.Question">
         <MappingFragment StoreEntitySet="Questions">
@@ -11,6 +11,44 @@
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Question1" ColumnName="Question" />
           <ScalarProperty Name="Answer" ColumnName="Answer" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="GameQuestions">
+      <EntityTypeMapping TypeName="BrockTriviaModel.GameQuestion">
+        <MappingFragment StoreEntitySet="GameQuestions">
+          <ScalarProperty Name="RoundNumber" ColumnName="RoundNumber" />
+          <ScalarProperty Name="QuestionId" ColumnName="QuestionId" />
+          <ScalarProperty Name="GameRoomId" ColumnName="GameRoomId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="GameRooms">
+      <EntityTypeMapping TypeName="BrockTriviaModel.GameRoom">
+        <MappingFragment StoreEntitySet="GameRoom">
+          <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />
+          <ScalarProperty Name="QuestionCount" ColumnName="QuestionCount" />
+          <ScalarProperty Name="PlayerCount" ColumnName="PlayerCount" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="GameSettings">
+      <EntityTypeMapping TypeName="BrockTriviaModel.GameSetting">
+        <MappingFragment StoreEntitySet="GameSettings">
+          <ScalarProperty Name="QuestionCount" ColumnName="QuestionCount" />
+          <ScalarProperty Name="PlayerCount" ColumnName="PlayerCount" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="GamePlayers">
+      <EntityTypeMapping TypeName="BrockTriviaModel.GamePlayer">
+        <MappingFragment StoreEntitySet="GamePlayers">
+          <ScalarProperty Name="PlayerName" ColumnName="PlayerName" />
+          <ScalarProperty Name="PlayerId" ColumnName="PlayerId" />
+          <ScalarProperty Name="GameRoomId" ColumnName="GameRoomId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

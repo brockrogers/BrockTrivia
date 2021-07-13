@@ -5,6 +5,43 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="BrockTriviaModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="GamePlayers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="GameRoomId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="PlayerId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="PlayerName" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="GameQuestions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="GameRoomId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="QuestionId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="RoundNumber" Type="smallint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="GameRoom">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="PlayerCount" Type="int" Nullable="false" />
+          <Property Name="QuestionCount" Type="smallint" Nullable="false" />
+          <Property Name="DateCreated" Type="datetime" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'BrockTrivia.dbo.GameSettings' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="GameSettings">
+          <Key>
+            <PropertyRef Name="PlayerCount" />
+            <PropertyRef Name="QuestionCount" />
+          </Key>
+          <Property Name="PlayerCount" Type="int" Nullable="false" />
+          <Property Name="QuestionCount" Type="smallint" Nullable="false" />
+        </EntityType>
         <EntityType Name="Questions">
           <Key>
             <PropertyRef Name="Id" />
@@ -17,8 +54,65 @@
           <Property Name="OptionC" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="OptionD" Type="varchar" MaxLength="100" Nullable="false" />
         </EntityType>
+        <Association Name="FK_GamePlayers_GameRoom">
+          <End Role="GameRoom" Type="Self.GameRoom" Multiplicity="1" />
+          <End Role="GamePlayers" Type="Self.GamePlayers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GameRoom">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GamePlayers">
+              <PropertyRef Name="GameRoomId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GameQuestions_GameQuestions">
+          <End Role="Questions" Type="Self.Questions" Multiplicity="1" />
+          <End Role="GameQuestions" Type="Self.GameQuestions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Questions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GameQuestions">
+              <PropertyRef Name="QuestionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GameQuestions_GameRooms">
+          <End Role="GameRoom" Type="Self.GameRoom" Multiplicity="1" />
+          <End Role="GameQuestions" Type="Self.GameQuestions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GameRoom">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GameQuestions">
+              <PropertyRef Name="GameRoomId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="BrockTriviaModelStoreContainer">
+          <EntitySet Name="GamePlayers" EntityType="Self.GamePlayers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GameQuestions" EntityType="Self.GameQuestions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GameRoom" EntityType="Self.GameRoom" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Questions" EntityType="Self.Questions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GameSettings" EntityType="Self.GameSettings" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [GameSettings].[PlayerCount] AS [PlayerCount], 
+    [GameSettings].[QuestionCount] AS [QuestionCount]
+    FROM [dbo].[GameSettings] AS [GameSettings]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_GamePlayers_GameRoom" Association="Self.FK_GamePlayers_GameRoom">
+            <End Role="GameRoom" EntitySet="GameRoom" />
+            <End Role="GamePlayers" EntitySet="GamePlayers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GameQuestions_GameQuestions" Association="Self.FK_GameQuestions_GameQuestions">
+            <End Role="Questions" EntitySet="Questions" />
+            <End Role="GameQuestions" EntitySet="GameQuestions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GameQuestions_GameRooms" Association="Self.FK_GameQuestions_GameRooms">
+            <End Role="GameRoom" EntitySet="GameRoom" />
+            <End Role="GameQuestions" EntitySet="GameQuestions" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -29,22 +123,115 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Guid" Nullable="false" />
-          <Property Name="Question1" Type="String" MaxLength="200" FixedLength="false" Nullable="false" />
+          <Property Name="Question1" Type="String" MaxLength="200" FixedLength="false" Nullable="false" Unicode="false" />
           <Property Name="Answer" Type="String" MaxLength="1" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="OptionA" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="OptionB" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="OptionC" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="OptionD" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="GameQuestions" Relationship="BrockTriviaModel.FK_GameQuestions_GameQuestions" FromRole="Question" ToRole="GameQuestion" />
         </EntityType>
-        <EntityContainer Name="TrivaCtx" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="TriviaCtx" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Questions" EntityType="Self.Question" />
+          <EntitySet Name="GameQuestions" EntityType="BrockTriviaModel.GameQuestion" />
+          <EntitySet Name="GameRooms" EntityType="BrockTriviaModel.GameRoom" />
+          <EntitySet Name="GameSettings" EntityType="BrockTriviaModel.GameSetting" />
+          <AssociationSet Name="FK_GameQuestions_GameQuestions" Association="BrockTriviaModel.FK_GameQuestions_GameQuestions">
+            <End Role="Question" EntitySet="Questions" />
+            <End Role="GameQuestion" EntitySet="GameQuestions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GameQuestions_GameRooms" Association="BrockTriviaModel.FK_GameQuestions_GameRooms">
+            <End Role="GameRoom" EntitySet="GameRooms" />
+            <End Role="GameQuestion" EntitySet="GameQuestions" />
+          </AssociationSet>
+          <EntitySet Name="GamePlayers" EntityType="BrockTriviaModel.GamePlayer" />
+          <AssociationSet Name="FK_GamePlayers_GameRoom" Association="BrockTriviaModel.FK_GamePlayers_GameRoom">
+            <End Role="GameRoom" EntitySet="GameRooms" />
+            <End Role="GamePlayer" EntitySet="GamePlayers" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="GameQuestion">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="GameRoomId" Type="Guid" Nullable="false" />
+          <Property Name="QuestionId" Type="Guid" Nullable="false" />
+          <Property Name="RoundNumber" Type="Int16" Nullable="false" />
+          <NavigationProperty Name="Question" Relationship="BrockTriviaModel.FK_GameQuestions_GameQuestions" FromRole="GameQuestion" ToRole="Question" />
+          <NavigationProperty Name="GameRoom" Relationship="BrockTriviaModel.FK_GameQuestions_GameRooms" FromRole="GameQuestion" ToRole="GameRoom" />
+        </EntityType>
+        <EntityType Name="GameRoom">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="PlayerCount" Type="Int32" Nullable="false" />
+          <Property Name="QuestionCount" Type="Int16" Nullable="false" />
+          <NavigationProperty Name="GameQuestions" Relationship="BrockTriviaModel.FK_GameQuestions_GameRooms" FromRole="GameRoom" ToRole="GameQuestion" />
+          <NavigationProperty Name="GamePlayers" Relationship="BrockTriviaModel.FK_GamePlayers_GameRoom" FromRole="GameRoom" ToRole="GamePlayer" />
+          <Property Name="DateCreated" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="GameSetting">
+          <Key>
+            <PropertyRef Name="PlayerCount" />
+            <PropertyRef Name="QuestionCount" />
+          </Key>
+          <Property Name="PlayerCount" Type="Int32" Nullable="false" />
+          <Property Name="QuestionCount" Type="Int16" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_GameQuestions_GameQuestions">
+          <End Type="BrockTriviaModel.Question" Role="Question" Multiplicity="1" />
+          <End Type="BrockTriviaModel.GameQuestion" Role="GameQuestion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Question">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GameQuestion">
+              <PropertyRef Name="QuestionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GameQuestions_GameRooms">
+          <End Type="BrockTriviaModel.GameRoom" Role="GameRoom" Multiplicity="1" />
+          <End Type="BrockTriviaModel.GameQuestion" Role="GameQuestion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GameRoom">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GameQuestion">
+              <PropertyRef Name="GameRoomId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="GamePlayer">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="GameRoomId" Type="Guid" Nullable="false" />
+          <Property Name="PlayerId" Type="Guid" Nullable="false" />
+          <Property Name="PlayerName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="GameRoom" Relationship="BrockTriviaModel.FK_GamePlayers_GameRoom" FromRole="GamePlayer" ToRole="GameRoom" />
+        </EntityType>
+        <Association Name="FK_GamePlayers_GameRoom">
+          <End Type="BrockTriviaModel.GameRoom" Role="GameRoom" Multiplicity="1" />
+          <End Type="BrockTriviaModel.GamePlayer" Role="GamePlayer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GameRoom">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GamePlayer">
+              <PropertyRef Name="GameRoomId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="BrockTriviaModelStoreContainer" CdmEntityContainer="TrivaCtx">
+        <EntityContainerMapping StorageEntityContainer="BrockTriviaModelStoreContainer" CdmEntityContainer="TriviaCtx">
           <EntitySetMapping Name="Questions">
             <EntityTypeMapping TypeName="BrockTriviaModel.Question">
               <MappingFragment StoreEntitySet="Questions">
@@ -55,6 +242,44 @@
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Question1" ColumnName="Question" />
                 <ScalarProperty Name="Answer" ColumnName="Answer" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GameQuestions">
+            <EntityTypeMapping TypeName="BrockTriviaModel.GameQuestion">
+              <MappingFragment StoreEntitySet="GameQuestions">
+                <ScalarProperty Name="RoundNumber" ColumnName="RoundNumber" />
+                <ScalarProperty Name="QuestionId" ColumnName="QuestionId" />
+                <ScalarProperty Name="GameRoomId" ColumnName="GameRoomId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GameRooms">
+            <EntityTypeMapping TypeName="BrockTriviaModel.GameRoom">
+              <MappingFragment StoreEntitySet="GameRoom">
+                <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />
+                <ScalarProperty Name="QuestionCount" ColumnName="QuestionCount" />
+                <ScalarProperty Name="PlayerCount" ColumnName="PlayerCount" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GameSettings">
+            <EntityTypeMapping TypeName="BrockTriviaModel.GameSetting">
+              <MappingFragment StoreEntitySet="GameSettings">
+                <ScalarProperty Name="QuestionCount" ColumnName="QuestionCount" />
+                <ScalarProperty Name="PlayerCount" ColumnName="PlayerCount" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GamePlayers">
+            <EntityTypeMapping TypeName="BrockTriviaModel.GamePlayer">
+              <MappingFragment StoreEntitySet="GamePlayers">
+                <ScalarProperty Name="PlayerName" ColumnName="PlayerName" />
+                <ScalarProperty Name="PlayerId" ColumnName="PlayerId" />
+                <ScalarProperty Name="GameRoomId" ColumnName="GameRoomId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

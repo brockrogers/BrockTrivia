@@ -5,14 +5,107 @@
       <PropertyRef Name="Id" />
     </Key>
     <Property Name="Id" Type="Guid" Nullable="false" />
-    <Property Name="Question1" Type="String" MaxLength="200" FixedLength="false" Nullable="false" />
+    <Property Name="Question1" Type="String" MaxLength="200" FixedLength="false" Nullable="false" Unicode="false" />
     <Property Name="Answer" Type="String" MaxLength="1" FixedLength="false" Unicode="false" Nullable="false" />
     <Property Name="OptionA" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
     <Property Name="OptionB" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
     <Property Name="OptionC" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
     <Property Name="OptionD" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="GameQuestions" Relationship="BrockTriviaModel.FK_GameQuestions_GameQuestions" FromRole="Question" ToRole="GameQuestion" />
   </EntityType>
-  <EntityContainer Name="TrivaCtx" annotation:LazyLoadingEnabled="true">
+  <EntityContainer Name="TriviaCtx" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="Questions" EntityType="Self.Question" />
+    <EntitySet Name="GameQuestions" EntityType="BrockTriviaModel.GameQuestion" />
+    <EntitySet Name="GameRooms" EntityType="BrockTriviaModel.GameRoom" />
+    <EntitySet Name="GameSettings" EntityType="BrockTriviaModel.GameSetting" />
+    <AssociationSet Name="FK_GameQuestions_GameQuestions" Association="BrockTriviaModel.FK_GameQuestions_GameQuestions">
+      <End Role="Question" EntitySet="Questions" />
+      <End Role="GameQuestion" EntitySet="GameQuestions" />
+    </AssociationSet>
+    <AssociationSet Name="FK_GameQuestions_GameRooms" Association="BrockTriviaModel.FK_GameQuestions_GameRooms">
+      <End Role="GameRoom" EntitySet="GameRooms" />
+      <End Role="GameQuestion" EntitySet="GameQuestions" />
+    </AssociationSet>
+    <EntitySet Name="GamePlayers" EntityType="BrockTriviaModel.GamePlayer" />
+    <AssociationSet Name="FK_GamePlayers_GameRoom" Association="BrockTriviaModel.FK_GamePlayers_GameRoom">
+      <End Role="GameRoom" EntitySet="GameRooms" />
+      <End Role="GamePlayer" EntitySet="GamePlayers" />
+    </AssociationSet>
   </EntityContainer>
+  <EntityType Name="GameQuestion">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Guid" Nullable="false" />
+    <Property Name="GameRoomId" Type="Guid" Nullable="false" />
+    <Property Name="QuestionId" Type="Guid" Nullable="false" />
+    <Property Name="RoundNumber" Type="Int16" Nullable="false" />
+    <NavigationProperty Name="Question" Relationship="BrockTriviaModel.FK_GameQuestions_GameQuestions" FromRole="GameQuestion" ToRole="Question" />
+    <NavigationProperty Name="GameRoom" Relationship="BrockTriviaModel.FK_GameQuestions_GameRooms" FromRole="GameQuestion" ToRole="GameRoom" />
+  </EntityType>
+  <EntityType Name="GameRoom">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Guid" Nullable="false" />
+    <Property Name="PlayerCount" Type="Int32" Nullable="false" />
+    <Property Name="QuestionCount" Type="Int16" Nullable="false" />
+    <NavigationProperty Name="GameQuestions" Relationship="BrockTriviaModel.FK_GameQuestions_GameRooms" FromRole="GameRoom" ToRole="GameQuestion" />
+    <NavigationProperty Name="GamePlayers" Relationship="BrockTriviaModel.FK_GamePlayers_GameRoom" FromRole="GameRoom" ToRole="GamePlayer" />
+    <Property Name="DateCreated" Type="DateTime" Nullable="false" Precision="3" />
+  </EntityType>
+  <EntityType Name="GameSetting">
+    <Key>
+      <PropertyRef Name="PlayerCount" />
+      <PropertyRef Name="QuestionCount" />
+    </Key>
+    <Property Name="PlayerCount" Type="Int32" Nullable="false" />
+    <Property Name="QuestionCount" Type="Int16" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_GameQuestions_GameQuestions">
+    <End Type="BrockTriviaModel.Question" Role="Question" Multiplicity="1" />
+    <End Type="BrockTriviaModel.GameQuestion" Role="GameQuestion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Question">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="GameQuestion">
+        <PropertyRef Name="QuestionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_GameQuestions_GameRooms">
+    <End Type="BrockTriviaModel.GameRoom" Role="GameRoom" Multiplicity="1" />
+    <End Type="BrockTriviaModel.GameQuestion" Role="GameQuestion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="GameRoom">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="GameQuestion">
+        <PropertyRef Name="GameRoomId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="GamePlayer">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Guid" Nullable="false" />
+    <Property Name="GameRoomId" Type="Guid" Nullable="false" />
+    <Property Name="PlayerId" Type="Guid" Nullable="false" />
+    <Property Name="PlayerName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="GameRoom" Relationship="BrockTriviaModel.FK_GamePlayers_GameRoom" FromRole="GamePlayer" ToRole="GameRoom" />
+  </EntityType>
+  <Association Name="FK_GamePlayers_GameRoom">
+    <End Type="BrockTriviaModel.GameRoom" Role="GameRoom" Multiplicity="1" />
+    <End Type="BrockTriviaModel.GamePlayer" Role="GamePlayer" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="GameRoom">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="GamePlayer">
+        <PropertyRef Name="GameRoomId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema>

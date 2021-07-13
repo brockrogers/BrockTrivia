@@ -12,23 +12,23 @@ namespace TriviaService
     using System;
     using System.Collections.Generic;
     
-    public partial class Question
+    public partial class GameRoom
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Question()
+        public GameRoom()
         {
             this.GameQuestions = new HashSet<GameQuestion>();
+            this.GamePlayers = new HashSet<GamePlayer>();
         }
     
         public System.Guid Id { get; set; }
-        public string Question1 { get; set; }
-        public string Answer { get; set; }
-        public string OptionA { get; set; }
-        public string OptionB { get; set; }
-        public string OptionC { get; set; }
-        public string OptionD { get; set; }
+        public int PlayerCount { get; set; }
+        public short QuestionCount { get; set; }
+        public System.DateTime DateCreated { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GameQuestion> GameQuestions { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GamePlayer> GamePlayers { get; set; }
     }
 }

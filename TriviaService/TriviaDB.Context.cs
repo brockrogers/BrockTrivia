@@ -13,10 +13,10 @@ namespace TriviaService
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class TrivaCtx : DbContext
+    public partial class TriviaCtx : DbContext
     {
-        public TrivaCtx()
-            : base("name=TrivaCtx")
+        public TriviaCtx()
+            : base("name=TriviaCtx")
         {
         }
     
@@ -26,5 +26,9 @@ namespace TriviaService
         }
     
         public virtual DbSet<Question> Questions { get; set; }
+        public virtual DbSet<GameQuestion> GameQuestions { get; set; }
+        public virtual DbSet<GameRoom> GameRooms { get; set; }
+        public virtual DbSet<GameSetting> GameSettings { get; set; }
+        public virtual DbSet<GamePlayer> GamePlayers { get; set; }
     }
 }
