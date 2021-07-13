@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {HttpClient} from "@angular/common/http";
 
 @Component({
   selector: 'app-login-component',
@@ -6,11 +7,14 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./login-component.component.css']
 })
 export class LoginComponent implements OnInit {
-
-  constructor() { }
+  newPlayerName = "";
+  constructor(httpClient:HttpClient) { }
 
   ngOnInit(): void {
 
   }
 
+  async createNewPlayer() {
+      
+  }
 }

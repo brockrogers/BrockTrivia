@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <parameters>
   <setParameter name="IIS Web Application Name" value="Default Web Site/" />
-  <setParameter name="TrivaCtx-Web.config Connection String" value="metadata=res://*/TriviaDB.csdl|res://*/TriviaDB.ssdl|res://*/TriviaDB.msl;provider=System.Data.SqlClient;provider connection string=&quot;data source=brocktrivia.cpzvkpgfmpj5.us-east-2.rds.amazonaws.com;initial catalog=BrockTrivia;persist security info=True;user id=admin;password=s8gCvsGVA3jnynEyinaN;MultipleActiveResultSets=True;App=EntityFramework&quot;" />
+  <setParameter name="TriviaCtx-Web.config Connection String" value="metadata=res://*/TriviaDB.csdl|res://*/TriviaDB.ssdl|res://*/TriviaDB.msl;provider=System.Data.SqlClient;provider connection string=&quot;data source=brocktrivia.cpzvkpgfmpj5.us-east-2.rds.amazonaws.com;initial catalog=BrockTrivia;persist security info=True;user id=admin;password=s8gCvsGVA3jnynEyinaN;MultipleActiveResultSets=True;App=EntityFramework&quot;" />
 </parameters>

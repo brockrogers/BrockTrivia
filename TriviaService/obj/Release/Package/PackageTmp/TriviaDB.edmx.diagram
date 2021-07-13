@@ -6,6 +6,13 @@
     <edmx:Diagrams>
       <Diagram DiagramId="33f5d361771244d7beaa63fa1196b6f9" Name="Diagram1">
         <EntityTypeShape EntityType="BrockTriviaModel.Question" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="BrockTriviaModel.GameQuestion" Width="1.5" PointX="3" PointY="1" />
+        <EntityTypeShape EntityType="BrockTriviaModel.GameRoom" Width="1.5" PointX="0.75" PointY="5.125" />
+        <EntityTypeShape EntityType="BrockTriviaModel.GameSetting" Width="1.5" PointX="3.375" PointY="4.75" />
+        <AssociationConnector Association="BrockTriviaModel.FK_GameQuestions_GameQuestions" />
+        <AssociationConnector Association="BrockTriviaModel.FK_GameQuestions_GameRooms" />
+        <EntityTypeShape EntityType="BrockTriviaModel.GamePlayer" Width="1.5" PointX="3" PointY="7.125" />
+        <AssociationConnector Association="BrockTriviaModel.FK_GamePlayers_GameRoom" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

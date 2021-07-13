@@ -7,9 +7,9 @@
     Enter a Username
   </div>
   <div>
-    <input placeholder="username" />
+    <input placeholder="username" [(ngModel)]="newPlayerName" />
   </div>
   <div>
-    <button>Let's Play!</button>
+    <button (click)="createNewPlayer()" [disabled]="newPlayerName.length == 0">Let's Play!</button>
   </div>
 </div>
