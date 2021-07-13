@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="BrockTriviaModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Questions">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="Question" Type="varchar" MaxLength="200" Nullable="false" />
+    <Property Name="Answer" Type="varchar" MaxLength="1" Nullable="false" />
+    <Property Name="OptionA" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="OptionB" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="OptionC" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="OptionD" Type="varchar" MaxLength="100" Nullable="false" />
+  </EntityType>
+  <EntityContainer Name="BrockTriviaModelStoreContainer">
+    <EntitySet Name="Questions" EntityType="Self.Questions" Schema="dbo" store:Type="Tables" />
+  </EntityContainer>
+</Schema>
