@@ -10,6 +10,12 @@
     <input placeholder="username" [(ngModel)]="newPlayerName" />
   </div>
   <div>
-    <button (click)="createNewPlayer()" [disabled]="newPlayerName.length == 0">Let's Play!</button>
+    <button (click)="createNewPlayer()" [disabled]="newPlayerName.length == 0 || isLoggingIn">Let's Play!</button>
+  </div>
+  <div *ngIf="isLoggingIn" class="white-font">
+    Please Wait ....
+  </div>
+  <div *ngIf="errorText.length > 0">
+    {{errorText}}
   </div>
 </div>

@@ -85,6 +85,7 @@ namespace TriviaService.Controllers
                 });
 
                 playerModel.GameRoomId = gameRoom.Id;
+                playerModel.PlayerName = playerName;
 
                 ctx.SaveChanges();
             }

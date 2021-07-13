@@ -9,5 +9,6 @@ namespace TriviaService.Models
     {
         public Guid GameRoomId { get; set; }
         public Guid PlayerId { get; set; }
+        public string PlayerName { get; set; }
     }
 }
