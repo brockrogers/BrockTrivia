@@ -190,6 +190,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
+    <Content Include="BrockTriviaHQ\3rdpartylicenses.txt" />
+    <Content Include="BrockTriviaHQ\favicon.ico" />
+    <Content Include="BrockTriviaHQ\index.html" />
+    <Content Include="BrockTriviaHQ\main.3e4f368485aaca16d4c1.js" />
+    <Content Include="BrockTriviaHQ\polyfills.6053dc5c9593e87521f6.js" />
+    <Content Include="BrockTriviaHQ\runtime.387a746e090758ddb088.js" />
+    <Content Include="BrockTriviaHQ\styles.a0824890f3d6fc3e4314.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
