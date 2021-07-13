@@ -46,9 +46,19 @@
       <EntityTypeMapping TypeName="BrockTriviaModel.GamePlayer">
         <MappingFragment StoreEntitySet="GamePlayers">
           <ScalarProperty Name="PlayerName" ColumnName="PlayerName" />
-          <ScalarProperty Name="PlayerId" ColumnName="PlayerId" />
           <ScalarProperty Name="GameRoomId" ColumnName="GameRoomId" />
           <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="GameAnswers">
+      <EntityTypeMapping TypeName="BrockTriviaModel.GameAnswer">
+        <MappingFragment StoreEntitySet="GameAnswers">
+          <ScalarProperty Name="AnswerCorrect" ColumnName="AnswerCorrect" />
+          <ScalarProperty Name="Answer" ColumnName="Answer" />
+          <ScalarProperty Name="PlayerId" ColumnName="PlayerId" />
+          <ScalarProperty Name="GameQuestionId" ColumnName="GameQuestionId" />
+          <ScalarProperty Name="AnswerId" ColumnName="AnswerId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

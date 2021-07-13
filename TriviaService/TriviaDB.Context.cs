@@ -30,5 +30,6 @@ namespace TriviaService
         public virtual DbSet<GameRoom> GameRooms { get; set; }
         public virtual DbSet<GameSetting> GameSettings { get; set; }
         public virtual DbSet<GamePlayer> GamePlayers { get; set; }
+        public virtual DbSet<GameAnswer> GameAnswers { get; set; }
     }
 }

@@ -14,6 +14,12 @@ namespace TriviaService
     
     public partial class GameQuestion
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public GameQuestion()
+        {
+            this.GameAnswers = new HashSet<GameAnswer>();
+        }
+    
         public System.Guid Id { get; set; }
         public System.Guid GameRoomId { get; set; }
         public System.Guid QuestionId { get; set; }
@@ -21,5 +27,7 @@ namespace TriviaService
     
         public virtual Question Question { get; set; }
         public virtual GameRoom GameRoom { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GameAnswer> GameAnswers { get; set; }
     }
 }

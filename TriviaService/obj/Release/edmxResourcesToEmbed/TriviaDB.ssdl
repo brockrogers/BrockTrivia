@@ -1,12 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Schema Namespace="BrockTriviaModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="GameAnswers">
+    <Key>
+      <PropertyRef Name="AnswerId" />
+    </Key>
+    <Property Name="AnswerId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="GameQuestionId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="PlayerId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="Answer" Type="varchar" MaxLength="1" Nullable="false" />
+    <Property Name="AnswerCorrect" Type="bit" Nullable="false" />
+  </EntityType>
   <EntityType Name="GamePlayers">
     <Key>
       <PropertyRef Name="Id" />
     </Key>
     <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
     <Property Name="GameRoomId" Type="uniqueidentifier" Nullable="false" />
-    <Property Name="PlayerId" Type="uniqueidentifier" Nullable="false" />
     <Property Name="PlayerName" Type="varchar" MaxLength="50" Nullable="false" />
   </EntityType>
   <EntityType Name="GameQuestions">
@@ -49,6 +58,30 @@ warning 6002: The table/view 'BrockTrivia.dbo.GameSettings' does not have a prim
     <Property Name="OptionC" Type="varchar" MaxLength="100" Nullable="false" />
     <Property Name="OptionD" Type="varchar" MaxLength="100" Nullable="false" />
   </EntityType>
+  <Association Name="FK_GameAnswers_GamePlayers">
+    <End Role="GamePlayers" Type="Self.GamePlayers" Multiplicity="1" />
+    <End Role="GameAnswers" Type="Self.GameAnswers" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="GamePlayers">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="GameAnswers">
+        <PropertyRef Name="PlayerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_GameAnswers_GameQuestions">
+    <End Role="GameQuestions" Type="Self.GameQuestions" Multiplicity="1" />
+    <End Role="GameAnswers" Type="Self.GameAnswers" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="GameQuestions">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="GameAnswers">
+        <PropertyRef Name="GameQuestionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_GamePlayers_GameRoom">
     <End Role="GameRoom" Type="Self.GameRoom" Multiplicity="1" />
     <End Role="GamePlayers" Type="Self.GamePlayers" Multiplicity="*" />
@@ -86,6 +119,7 @@ warning 6002: The table/view 'BrockTrivia.dbo.GameSettings' does not have a prim
     </ReferentialConstraint>
   </Association>
   <EntityContainer Name="BrockTriviaModelStoreContainer">
+    <EntitySet Name="GameAnswers" EntityType="Self.GameAnswers" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="GamePlayers" EntityType="Self.GamePlayers" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="GameQuestions" EntityType="Self.GameQuestions" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="GameRoom" EntityType="Self.GameRoom" Schema="dbo" store:Type="Tables" />
@@ -96,6 +130,14 @@ warning 6002: The table/view 'BrockTrivia.dbo.GameSettings' does not have a prim
     [GameSettings].[QuestionCount] AS [QuestionCount]
     FROM [dbo].[GameSettings] AS [GameSettings]</DefiningQuery>
     </EntitySet>
+    <AssociationSet Name="FK_GameAnswers_GamePlayers" Association="Self.FK_GameAnswers_GamePlayers">
+      <End Role="GamePlayers" EntitySet="GamePlayers" />
+      <End Role="GameAnswers" EntitySet="GameAnswers" />
+    </AssociationSet>
+    <AssociationSet Name="FK_GameAnswers_GameQuestions" Association="Self.FK_GameAnswers_GameQuestions">
+      <End Role="GameQuestions" EntitySet="GameQuestions" />
+      <End Role="GameAnswers" EntitySet="GameAnswers" />
+    </AssociationSet>
     <AssociationSet Name="FK_GamePlayers_GameRoom" Association="Self.FK_GamePlayers_GameRoom">
       <End Role="GameRoom" EntitySet="GameRoom" />
       <End Role="GamePlayers" EntitySet="GamePlayers" />

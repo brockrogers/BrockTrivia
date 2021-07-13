@@ -11,6 +11,32 @@ namespace TriviaService.Controllers
     [RoutePrefix("api/Trivia")]
     public class TriviaController : ApiController
     {
+        [HttpPost]
+        [Route("Answer")]
+        public async Task<bool> ValidateAnswer(AnswerModel answer)
+        {
+            var correctAnswer = false;
+
+            using(var ctx = new TriviaCtx())
+            {
+                var gameQuestion = ctx.GameQuestions.FirstOrDefault(gq => gq.Id == answer.QuestionId);
+                correctAnswer = gameQuestion.Question.Answer == answer.Answer;
+
+                ctx.GameAnswers.Add(new GameAnswer
+                {
+                    AnswerId = Guid.NewGuid(),
+                    Answer = answer.Answer,
+                    AnswerCorrect = correctAnswer,
+                    GameQuestionId = answer.QuestionId,
+                    PlayerId = answer.PlayerId
+                });
+
+                ctx.SaveChanges();
+            }
+
+            return correctAnswer;
+        }
+
         [HttpPut]
         [Route("LoadQuestions")]
         public async Task<IHttpActionResult> LoadQuestions([FromBody] string password)
@@ -78,10 +104,9 @@ namespace TriviaService.Controllers
 
                 gameRoom.GamePlayers.Add(new GamePlayer
                 {
-                    Id = Guid.NewGuid(),
+                    Id = playerId,
                     GameRoomId = gameRoom.Id,
-                    PlayerName = playerName,
-                    PlayerId = playerId
+                    PlayerName = playerName                    
                 });
 
                 playerModel.GameRoomId = gameRoom.Id;

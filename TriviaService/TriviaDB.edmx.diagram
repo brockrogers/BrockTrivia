@@ -13,7 +13,10 @@
         <AssociationConnector Association="BrockTriviaModel.FK_GameQuestions_GameRooms" />
         <EntityTypeShape EntityType="BrockTriviaModel.GamePlayer" Width="1.5" PointX="3" PointY="7.125" />
         <AssociationConnector Association="BrockTriviaModel.FK_GamePlayers_GameRoom" />
-      </Diagram>
+        <EntityTypeShape EntityType="BrockTriviaModel.GameAnswer" Width="1.5" PointX="6.25" PointY="3.875" />
+        <AssociationConnector Association="BrockTriviaModel.FK_GameAnswers_GamePlayers" />
+        <AssociationConnector Association="BrockTriviaModel.FK_GameAnswers_GameQuestions" />
+        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

@@ -5,13 +5,22 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="BrockTriviaModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="GameAnswers">
+          <Key>
+            <PropertyRef Name="AnswerId" />
+          </Key>
+          <Property Name="AnswerId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="GameQuestionId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="PlayerId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Answer" Type="varchar" MaxLength="1" Nullable="false" />
+          <Property Name="AnswerCorrect" Type="bit" Nullable="false" />
+        </EntityType>
         <EntityType Name="GamePlayers">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="GameRoomId" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="PlayerId" Type="uniqueidentifier" Nullable="false" />
           <Property Name="PlayerName" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="GameQuestions">
@@ -54,6 +63,30 @@ warning 6002: The table/view 'BrockTrivia.dbo.GameSettings' does not have a prim
           <Property Name="OptionC" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="OptionD" Type="varchar" MaxLength="100" Nullable="false" />
         </EntityType>
+        <Association Name="FK_GameAnswers_GamePlayers">
+          <End Role="GamePlayers" Type="Self.GamePlayers" Multiplicity="1" />
+          <End Role="GameAnswers" Type="Self.GameAnswers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GamePlayers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GameAnswers">
+              <PropertyRef Name="PlayerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GameAnswers_GameQuestions">
+          <End Role="GameQuestions" Type="Self.GameQuestions" Multiplicity="1" />
+          <End Role="GameAnswers" Type="Self.GameAnswers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GameQuestions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GameAnswers">
+              <PropertyRef Name="GameQuestionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_GamePlayers_GameRoom">
           <End Role="GameRoom" Type="Self.GameRoom" Multiplicity="1" />
           <End Role="GamePlayers" Type="Self.GamePlayers" Multiplicity="*" />
@@ -91,6 +124,7 @@ warning 6002: The table/view 'BrockTrivia.dbo.GameSettings' does not have a prim
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="BrockTriviaModelStoreContainer">
+          <EntitySet Name="GameAnswers" EntityType="Self.GameAnswers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GamePlayers" EntityType="Self.GamePlayers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GameQuestions" EntityType="Self.GameQuestions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GameRoom" EntityType="Self.GameRoom" Schema="dbo" store:Type="Tables" />
@@ -101,6 +135,14 @@ warning 6002: The table/view 'BrockTrivia.dbo.GameSettings' does not have a prim
     [GameSettings].[QuestionCount] AS [QuestionCount]
     FROM [dbo].[GameSettings] AS [GameSettings]</DefiningQuery>
           </EntitySet>
+          <AssociationSet Name="FK_GameAnswers_GamePlayers" Association="Self.FK_GameAnswers_GamePlayers">
+            <End Role="GamePlayers" EntitySet="GamePlayers" />
+            <End Role="GameAnswers" EntitySet="GameAnswers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GameAnswers_GameQuestions" Association="Self.FK_GameAnswers_GameQuestions">
+            <End Role="GameQuestions" EntitySet="GameQuestions" />
+            <End Role="GameAnswers" EntitySet="GameAnswers" />
+          </AssociationSet>
           <AssociationSet Name="FK_GamePlayers_GameRoom" Association="Self.FK_GamePlayers_GameRoom">
             <End Role="GameRoom" EntitySet="GameRoom" />
             <End Role="GamePlayers" EntitySet="GamePlayers" />
@@ -149,7 +191,16 @@ warning 6002: The table/view 'BrockTrivia.dbo.GameSettings' does not have a prim
             <End Role="GameRoom" EntitySet="GameRooms" />
             <End Role="GamePlayer" EntitySet="GamePlayers" />
           </AssociationSet>
-        </EntityContainer>
+          <EntitySet Name="GameAnswers" EntityType="BrockTriviaModel.GameAnswer" />
+          <AssociationSet Name="FK_GameAnswers_GamePlayers" Association="BrockTriviaModel.FK_GameAnswers_GamePlayers">
+            <End Role="GamePlayer" EntitySet="GamePlayers" />
+            <End Role="GameAnswer" EntitySet="GameAnswers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GameAnswers_GameQuestions" Association="BrockTriviaModel.FK_GameAnswers_GameQuestions">
+            <End Role="GameQuestion" EntitySet="GameQuestions" />
+            <End Role="GameAnswer" EntitySet="GameAnswers" />
+          </AssociationSet>
+          </EntityContainer>
         <EntityType Name="GameQuestion">
           <Key>
             <PropertyRef Name="Id" />
@@ -160,6 +211,7 @@ warning 6002: The table/view 'BrockTrivia.dbo.GameSettings' does not have a prim
           <Property Name="RoundNumber" Type="Int16" Nullable="false" />
           <NavigationProperty Name="Question" Relationship="BrockTriviaModel.FK_GameQuestions_GameQuestions" FromRole="GameQuestion" ToRole="Question" />
           <NavigationProperty Name="GameRoom" Relationship="BrockTriviaModel.FK_GameQuestions_GameRooms" FromRole="GameQuestion" ToRole="GameRoom" />
+          <NavigationProperty Name="GameAnswers" Relationship="BrockTriviaModel.FK_GameAnswers_GameQuestions" FromRole="GameQuestion" ToRole="GameAnswer" />
         </EntityType>
         <EntityType Name="GameRoom">
           <Key>
@@ -210,9 +262,9 @@ warning 6002: The table/view 'BrockTrivia.dbo.GameSettings' does not have a prim
           </Key>
           <Property Name="Id" Type="Guid" Nullable="false" />
           <Property Name="GameRoomId" Type="Guid" Nullable="false" />
-          <Property Name="PlayerId" Type="Guid" Nullable="false" />
           <Property Name="PlayerName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="GameRoom" Relationship="BrockTriviaModel.FK_GamePlayers_GameRoom" FromRole="GamePlayer" ToRole="GameRoom" />
+          <NavigationProperty Name="GameAnswers" Relationship="BrockTriviaModel.FK_GameAnswers_GamePlayers" FromRole="GamePlayer" ToRole="GameAnswer" />
         </EntityType>
         <Association Name="FK_GamePlayers_GameRoom">
           <End Type="BrockTriviaModel.GameRoom" Role="GameRoom" Multiplicity="1" />
@@ -226,7 +278,43 @@ warning 6002: The table/view 'BrockTrivia.dbo.GameSettings' does not have a prim
             </Dependent>
           </ReferentialConstraint>
         </Association>
-      </Schema>
+        <EntityType Name="GameAnswer">
+          <Key>
+            <PropertyRef Name="AnswerId" />
+          </Key>
+          <Property Name="AnswerId" Type="Guid" Nullable="false" />
+          <Property Name="GameQuestionId" Type="Guid" Nullable="false" />
+          <Property Name="PlayerId" Type="Guid" Nullable="false" />
+          <Property Name="Answer" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="AnswerCorrect" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="GamePlayer" Relationship="BrockTriviaModel.FK_GameAnswers_GamePlayers" FromRole="GameAnswer" ToRole="GamePlayer" />
+          <NavigationProperty Name="GameQuestion" Relationship="BrockTriviaModel.FK_GameAnswers_GameQuestions" FromRole="GameAnswer" ToRole="GameQuestion" />
+        </EntityType>
+        <Association Name="FK_GameAnswers_GamePlayers">
+          <End Type="BrockTriviaModel.GamePlayer" Role="GamePlayer" Multiplicity="1" />
+          <End Type="BrockTriviaModel.GameAnswer" Role="GameAnswer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GamePlayer">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GameAnswer">
+              <PropertyRef Name="PlayerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GameAnswers_GameQuestions">
+          <End Type="BrockTriviaModel.GameQuestion" Role="GameQuestion" Multiplicity="1" />
+          <End Type="BrockTriviaModel.GameAnswer" Role="GameAnswer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GameQuestion">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GameAnswer">
+              <PropertyRef Name="GameQuestionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -277,9 +365,19 @@ warning 6002: The table/view 'BrockTrivia.dbo.GameSettings' does not have a prim
             <EntityTypeMapping TypeName="BrockTriviaModel.GamePlayer">
               <MappingFragment StoreEntitySet="GamePlayers">
                 <ScalarProperty Name="PlayerName" ColumnName="PlayerName" />
-                <ScalarProperty Name="PlayerId" ColumnName="PlayerId" />
                 <ScalarProperty Name="GameRoomId" ColumnName="GameRoomId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GameAnswers">
+            <EntityTypeMapping TypeName="BrockTriviaModel.GameAnswer">
+              <MappingFragment StoreEntitySet="GameAnswers">
+                <ScalarProperty Name="AnswerCorrect" ColumnName="AnswerCorrect" />
+                <ScalarProperty Name="Answer" ColumnName="Answer" />
+                <ScalarProperty Name="PlayerId" ColumnName="PlayerId" />
+                <ScalarProperty Name="GameQuestionId" ColumnName="GameQuestionId" />
+                <ScalarProperty Name="AnswerId" ColumnName="AnswerId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

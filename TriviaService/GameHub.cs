@@ -9,7 +9,7 @@ namespace TriviaService
 {
     public class GameHub : Hub
     {
-        public void JoinGameRoom(GamePlayerModel gamePlayer)
+        public int JoinGameRoom(GamePlayerModel gamePlayer)
         {
             List<string> players = null;
             var totalNeeded = 5;
@@ -25,6 +25,8 @@ namespace TriviaService
 
             if (players.Count >= totalNeeded)
                 StartGame(gamePlayer.GameRoomId);
+
+            return totalNeeded - players.Count;
         }
 
         private void StartGame(Guid gameRoomId)

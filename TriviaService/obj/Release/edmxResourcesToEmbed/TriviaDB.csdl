@@ -31,6 +31,15 @@
       <End Role="GameRoom" EntitySet="GameRooms" />
       <End Role="GamePlayer" EntitySet="GamePlayers" />
     </AssociationSet>
+    <EntitySet Name="GameAnswers" EntityType="BrockTriviaModel.GameAnswer" />
+    <AssociationSet Name="FK_GameAnswers_GamePlayers" Association="BrockTriviaModel.FK_GameAnswers_GamePlayers">
+      <End Role="GamePlayer" EntitySet="GamePlayers" />
+      <End Role="GameAnswer" EntitySet="GameAnswers" />
+    </AssociationSet>
+    <AssociationSet Name="FK_GameAnswers_GameQuestions" Association="BrockTriviaModel.FK_GameAnswers_GameQuestions">
+      <End Role="GameQuestion" EntitySet="GameQuestions" />
+      <End Role="GameAnswer" EntitySet="GameAnswers" />
+    </AssociationSet>
   </EntityContainer>
   <EntityType Name="GameQuestion">
     <Key>
@@ -42,6 +51,7 @@
     <Property Name="RoundNumber" Type="Int16" Nullable="false" />
     <NavigationProperty Name="Question" Relationship="BrockTriviaModel.FK_GameQuestions_GameQuestions" FromRole="GameQuestion" ToRole="Question" />
     <NavigationProperty Name="GameRoom" Relationship="BrockTriviaModel.FK_GameQuestions_GameRooms" FromRole="GameQuestion" ToRole="GameRoom" />
+    <NavigationProperty Name="GameAnswers" Relationship="BrockTriviaModel.FK_GameAnswers_GameQuestions" FromRole="GameQuestion" ToRole="GameAnswer" />
   </EntityType>
   <EntityType Name="GameRoom">
     <Key>
@@ -92,9 +102,9 @@
     </Key>
     <Property Name="Id" Type="Guid" Nullable="false" />
     <Property Name="GameRoomId" Type="Guid" Nullable="false" />
-    <Property Name="PlayerId" Type="Guid" Nullable="false" />
     <Property Name="PlayerName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="GameRoom" Relationship="BrockTriviaModel.FK_GamePlayers_GameRoom" FromRole="GamePlayer" ToRole="GameRoom" />
+    <NavigationProperty Name="GameAnswers" Relationship="BrockTriviaModel.FK_GameAnswers_GamePlayers" FromRole="GamePlayer" ToRole="GameAnswer" />
   </EntityType>
   <Association Name="FK_GamePlayers_GameRoom">
     <End Type="BrockTriviaModel.GameRoom" Role="GameRoom" Multiplicity="1" />
@@ -105,6 +115,42 @@
       </Principal>
       <Dependent Role="GamePlayer">
         <PropertyRef Name="GameRoomId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="GameAnswer">
+    <Key>
+      <PropertyRef Name="AnswerId" />
+    </Key>
+    <Property Name="AnswerId" Type="Guid" Nullable="false" />
+    <Property Name="GameQuestionId" Type="Guid" Nullable="false" />
+    <Property Name="PlayerId" Type="Guid" Nullable="false" />
+    <Property Name="Answer" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="false" />
+    <Property Name="AnswerCorrect" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="GamePlayer" Relationship="BrockTriviaModel.FK_GameAnswers_GamePlayers" FromRole="GameAnswer" ToRole="GamePlayer" />
+    <NavigationProperty Name="GameQuestion" Relationship="BrockTriviaModel.FK_GameAnswers_GameQuestions" FromRole="GameAnswer" ToRole="GameQuestion" />
+  </EntityType>
+  <Association Name="FK_GameAnswers_GamePlayers">
+    <End Type="BrockTriviaModel.GamePlayer" Role="GamePlayer" Multiplicity="1" />
+    <End Type="BrockTriviaModel.GameAnswer" Role="GameAnswer" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="GamePlayer">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="GameAnswer">
+        <PropertyRef Name="PlayerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_GameAnswers_GameQuestions">
+    <End Type="BrockTriviaModel.GameQuestion" Role="GameQuestion" Multiplicity="1" />
+    <End Type="BrockTriviaModel.GameAnswer" Role="GameAnswer" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="GameQuestion">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="GameAnswer">
+        <PropertyRef Name="GameQuestionId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
