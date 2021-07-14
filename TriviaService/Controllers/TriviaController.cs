@@ -11,6 +11,34 @@ namespace TriviaService.Controllers
     [RoutePrefix("api/Trivia")]
     public class TriviaController : ApiController
     {
+        [HttpGet]
+        [Route("Results/{gameRoomId:Guid}/{gameRound}")]
+        public async Task<List<GameResultsModel>> GetGameTotals(Guid gameRoomId, short gameRound)
+        {
+            var gameResults = new List<GameResultsModel>();
+            using(var ctx = new TriviaCtx())
+            {
+                var gameRoom = ctx.GameRooms.FirstOrDefault(gr => gr.Id == gameRoomId);
+                foreach(var gameQuestion in gameRoom.GameQuestions.Where(gq => gq.RoundNumber < gameRound).OrderBy(gq => gq.RoundNumber))
+                {
+                    gameResults.Add(new GameResultsModel
+                    {
+                        TotalPlayers = gameQuestion.GameAnswers.Count(),
+                        RoundNumber = gameQuestion.RoundNumber,
+                        Question = gameQuestion.Question.Question1,
+                        CorrectAnswer = gameQuestion.Question.Answer == "A" ? gameQuestion.Question.OptionA :
+                        gameQuestion.Question.Answer == "B" ? gameQuestion.Question.OptionB :
+                        gameQuestion.Question.Answer == "C" ? gameQuestion.Question.OptionC : gameQuestion.Question.OptionD,
+                        CorrectAnswers = gameQuestion.GameAnswers.Count(ga => ga.AnswerCorrect),
+                        IncorrectAnswers = gameQuestion.GameAnswers.Count(ga => !ga.AnswerCorrect)
+                    });
+                }
+
+            }
+
+            return gameResults;
+        }
+
         [HttpPost]
         [Route("Answer")]
         public async Task<bool> ValidateAnswer(AnswerModel answer)

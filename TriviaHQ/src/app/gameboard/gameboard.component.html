@@ -29,6 +29,9 @@
           <button (click)="submitAnswer()" style="color:#000" *ngIf="!isAnswering">Submit Answer</button>
           <span *ngIf="isAnswering" class="white-font">Submitting Answer ....</span>
         </div>
+        <div class="white-font" style="font-size: 14pt" *ngIf="!isAnswering">
+          {{timerValue}}
+        </div>
       </div>
     </div>
     <div class="col-sm-3 white-font">

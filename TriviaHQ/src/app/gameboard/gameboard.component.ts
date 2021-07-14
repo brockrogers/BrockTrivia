@@ -23,6 +23,8 @@ export class GameboardComponent implements OnInit {
   baseURL = 'http://triviaservice-dev.us-west-2.elasticbeanstalk.com/api/Trivia/';
   isAnswering = false;
   invalidAnswer = false;
+  timerValue = 10;
+  answerTimer:any = null;
 
   constructor(private httpClient:HttpClient) { }
 
@@ -45,6 +47,7 @@ export class GameboardComponent implements OnInit {
     this.gameProxy.on('startGame', function(questionList:Array<any>) {
       self.questionList = questionList;
       self.gameStarted = true;
+      self.startAnswerTimer();
     });
 
     let tryingToReconnect = false;
@@ -64,6 +67,17 @@ export class GameboardComponent implements OnInit {
     });
 
     self.setUpJoinRoom();
+  }
+
+  startAnswerTimer() {
+    this.timerValue = 10;
+
+    this.answerTimer = setInterval(() => {
+      this.timerValue--;
+      if(this.timerValue <= 0) {
+        this.submitAnswer();
+      }
+    },1000)
   }
 
   setUpJoinRoom() {
@@ -96,6 +110,9 @@ export class GameboardComponent implements OnInit {
   }
 
   async submitAnswer():Promise<void> {
+    if(this.answerTimer)
+      clearInterval(this.answerTimer);
+    this.timerValue = 0;
     this.isAnswering = true;
     const answer = {QuestionId:this.questionList[this.currentQuestion].Id, answer:this.currentAnswer, PlayerId:this.player.PlayerId};
 
@@ -121,10 +138,16 @@ export class GameboardComponent implements OnInit {
       this.gameStarted = false;
       this.gameOver = true;
     }
-    else
+    else {
       this.currentQuestion++;
+      this.startAnswerTimer();
+    }
 
     this.currentAnswer = 'A';
+  }
+
+  async getGameResults():Promise<void> {
+
   }
 }
 
