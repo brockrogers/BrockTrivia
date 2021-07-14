@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using TriviaService.Models;
 
@@ -9,8 +10,9 @@ namespace TriviaService
 {
     public class GameHub : Hub
     {
-        public int JoinGameRoom(GamePlayerModel gamePlayer)
+        public JoinRoomResponseModel JoinGameRoom(GamePlayerModel gamePlayer)
         {
+            var joinRoomResponse = new JoinRoomResponseModel();
             List<string> players = null;
             var totalNeeded = 5;
 
@@ -20,14 +22,16 @@ namespace TriviaService
                 totalNeeded = ctx.GameRooms.FirstOrDefault(gr => gr.Id == gamePlayer.GameRoomId).PlayerCount;
             }
 
-            Groups.Add(Context.ConnectionId, gamePlayer.GameRoomId.ToString());
+            Groups.Add(Context.ConnectionId, gamePlayer.GameRoomId.ToString());            
             Clients.Group(gamePlayer.GameRoomId.ToString()).newPlayer(players, totalNeeded - players.Count);
 
             if (players.Count >= totalNeeded)
                 StartGame(gamePlayer.GameRoomId);
 
-            return totalNeeded - players.Count;
-        }
+            joinRoomResponse.PlayersNeeded = totalNeeded - players.Count;
+            joinRoomResponse.Players = players;
+            return joinRoomResponse;
+        }        
 
         private void StartGame(Guid gameRoomId)
         {

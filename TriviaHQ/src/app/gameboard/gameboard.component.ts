@@ -69,7 +69,10 @@ export class GameboardComponent implements OnInit {
   setUpJoinRoom() {
     let self = this;
     this.connection.start( {jsonp: true}).done(function() {
-      self.gameProxy.invoke('joinGameRoom', self.player).then((result:any) => {self.playersNeeded = result;});
+      self.gameProxy.invoke('joinGameRoom', self.player).then((result:any) => {
+        self.playersNeeded = result.PlayersNeeded;
+        self.playerList = result.Players;
+      });
     });
   }
 

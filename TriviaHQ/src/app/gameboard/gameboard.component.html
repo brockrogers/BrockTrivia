@@ -1,33 +1,49 @@
 
-<div style="padding: 20px" class="white-font">
-  <div style="font-size: 14pt">
-    {{getPlayerHeader()}}
+<div style="padding: 20px" class="white-font container-fluid">
+  <div class="row no-gutters">
+    <div class="col-sm-9">
+      <div style="font-size: 14pt">
+        {{getPlayerHeader()}}
+      </div>
+
+      <div *ngIf="questionList.length > 0 && gameStarted && !gameOver" style="margin-top: 40px">
+        <div style="font-size:14pt; text-decoration: underline">
+          Round {{currentQuestion + 1}} of {{questionList.length}}
+        </div>
+        <div style="font-size:14pt; margin-top: 20px; margin-bottom: 10px;">
+          Question: {{questionList[currentQuestion].question}}
+        </div>
+        <div>
+          <input type="radio" name="answer" [(ngModel)]="currentAnswer" value="A" /> {{questionList[currentQuestion].A}}
+        </div>
+        <div>
+          <input type="radio" name="answer" [(ngModel)]="currentAnswer" value="B"/> {{questionList[currentQuestion].B}}
+        </div>
+        <div>
+          <input type="radio" name="answer" [(ngModel)]="currentAnswer" value="C"/> {{questionList[currentQuestion].C}}
+        </div>
+        <div>
+          <input type="radio" name="answer" [(ngModel)]="currentAnswer" value="D"/> {{questionList[currentQuestion].D}}
+        </div>
+        <div style="margin-top: 20px;">
+          <button (click)="submitAnswer()" style="color:#000" *ngIf="!isAnswering">Submit Answer</button>
+          <span *ngIf="isAnswering" class="white-font">Submitting Answer ....</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-3 white-font">
+      <div>
+        Player List
+      </div>
+      <hr />
+      <div *ngFor="let player of playerList">
+        {{player}}
+      </div>
+    </div>
   </div>
 
-  <div *ngIf="questionList.length > 0 && gameStarted && !gameOver" style="margin-top: 40px">
-    <div style="font-size:14pt">
-      Question: {{questionList[currentQuestion].question}}
-    </div>
-    <div>
-      <input type="radio" name="answer" [(ngModel)]="currentAnswer" value="A" /> {{questionList[currentQuestion].A}}
-    </div>
-    <div>
-      <input type="radio" name="answer" [(ngModel)]="currentAnswer" value="B"/> {{questionList[currentQuestion].B}}
-    </div>
-    <div>
-      <input type="radio" name="answer" [(ngModel)]="currentAnswer" value="C"/> {{questionList[currentQuestion].C}}
-    </div>
-    <div>
-      <input type="radio" name="answer" [(ngModel)]="currentAnswer" value="D"/> {{questionList[currentQuestion].D}}
-    </div>
-    <div>
-      <button (click)="submitAnswer()" style="color:#000">Submit Answer</button>
-    </div>
-  </div>
 </div>
 
 
 
-<div *ngFor="let player of playerList">
-  {{player}}
-</div>
+

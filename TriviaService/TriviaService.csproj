@@ -213,6 +213,7 @@
     <Compile Include="Models\AnswerModel.cs" />
     <Compile Include="Models\GamePlayerModel.cs" />
     <Compile Include="Models\GameQuestionModel.cs" />
+    <Compile Include="Models\JoinRoomResponseModel.cs" />
     <Compile Include="Models\QuestionsModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Question.cs">
