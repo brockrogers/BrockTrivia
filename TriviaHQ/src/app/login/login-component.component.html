@@ -1,18 +1,18 @@
-<div style="width: 100%; margin-top: 50px; text-align: center; font-size: 20pt; color: #FFF; font-weight: bold">
+<div class="welcome-header">
   Welcome to Brock Trivia HQ!
 </div>
 
-<div style="text-align: center; margin-top: 50px;">
-  <div class="white-font">
+<div class="login-content">
+  <div>
     Enter a Username
   </div>
   <div>
     <input placeholder="username" [(ngModel)]="newPlayerName" />
   </div>
-  <div>
+  <div style="margin-top: 20px;">
     <button (click)="createNewPlayer()" [disabled]="newPlayerName.length == 0 || isLoggingIn">Let's Play!</button>
   </div>
-  <div *ngIf="isLoggingIn" class="white-font">
+  <div *ngIf="isLoggingIn">
     Please Wait ....
   </div>
   <div *ngIf="errorText.length > 0">

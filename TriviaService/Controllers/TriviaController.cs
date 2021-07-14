@@ -19,7 +19,7 @@ namespace TriviaService.Controllers
             using(var ctx = new TriviaCtx())
             {
                 var gameRoom = ctx.GameRooms.FirstOrDefault(gr => gr.Id == gameRoomId);
-                foreach(var gameQuestion in gameRoom.GameQuestions.Where(gq => gq.RoundNumber < gameRound).OrderBy(gq => gq.RoundNumber))
+                foreach(var gameQuestion in gameRoom.GameQuestions.Where(gq => gq.RoundNumber <= gameRound).OrderBy(gq => gq.RoundNumber))
                 {
                     gameResults.Add(new GameResultsModel
                     {

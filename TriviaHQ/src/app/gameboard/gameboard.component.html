@@ -1,5 +1,5 @@
 
-<div style="padding: 20px" class="white-font container-fluid">
+<div style="padding: 20px" class="container-fluid">
   <div class="row no-gutters">
     <div class="col-sm-9">
       <div style="font-size: 14pt">
@@ -14,27 +14,57 @@
           Question: {{questionList[currentQuestion].question}}
         </div>
         <div>
-          <input type="radio" name="answer" [(ngModel)]="currentAnswer" value="A" /> {{questionList[currentQuestion].A}}
+          <input type="radio" name="answer" [(ngModel)]="currentAnswer" value="A" /> <span class="radio-span">{{questionList[currentQuestion].A}}</span>
         </div>
         <div>
-          <input type="radio" name="answer" [(ngModel)]="currentAnswer" value="B"/> {{questionList[currentQuestion].B}}
+          <input type="radio" name="answer" [(ngModel)]="currentAnswer" value="B"/> <span class="radio-span">{{questionList[currentQuestion].B}}</span>
         </div>
         <div>
-          <input type="radio" name="answer" [(ngModel)]="currentAnswer" value="C"/> {{questionList[currentQuestion].C}}
+          <input type="radio" name="answer" [(ngModel)]="currentAnswer" value="C"/> <span class="radio-span">{{questionList[currentQuestion].C}}</span>
         </div>
         <div>
-          <input type="radio" name="answer" [(ngModel)]="currentAnswer" value="D"/> {{questionList[currentQuestion].D}}
+          <input type="radio" name="answer" [(ngModel)]="currentAnswer" value="D"/> <span class="radio-span">{{questionList[currentQuestion].D}}</span>
         </div>
         <div style="margin-top: 20px;">
-          <button (click)="submitAnswer()" style="color:#000" *ngIf="!isAnswering">Submit Answer</button>
-          <span *ngIf="isAnswering" class="white-font">Submitting Answer ....</span>
+          <div *ngIf="!isAnswering">
+            <button (click)="submitAnswer()" style="color:#000">Submit Answer</button>
+            <span class="timer-display">{{timerValue}}</span>
+          </div>
+          <span *ngIf="isAnswering">Submitting Answer ....</span>
         </div>
-        <div class="white-font" style="font-size: 14pt" *ngIf="!isAnswering">
-          {{timerValue}}
+      </div>
+      <div *ngIf="gameOver && gettingGameResults">
+        <div *ngIf="gameResults.length == 0">
+          Please wait while we compile the results for your game in approximately 15 seconds.
+        </div>
+        <div *ngIf="gameResults.length > 0" style="margin-top:20px">
+          <div *ngFor="let result of gameResults" class="game-results">
+            <div style="text-decoration: underline; margin-bottom: 5px;">
+              Round Number {{result.RoundNumber}}
+            </div>
+            <div>
+              <b>Question:</b>  {{result.Question}}
+            </div>
+            <div>
+              <b>Answer:</b>  {{result.CorrectAnswer}}
+            </div>
+            <div>
+              <b>Total Players:</b>  {{result.TotalPlayers}}
+            </div>
+            <div>
+              <b>Total Correct Answers:</b>  {{result.CorrectAnswers}}
+            </div>
+            <div>
+              <b>Total Incorrect Answers:</b>  {{result.IncorrectAnswers}}
+            </div>
+          </div>
+          <div>
+            <a routerLink="/login"><button>Start Over</button></a>
+          </div>
         </div>
       </div>
     </div>
-    <div class="col-sm-3 white-font">
+    <div class="col-sm-3">
       <div>
         Player List
       </div>

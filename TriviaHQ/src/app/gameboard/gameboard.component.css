@@ -1,0 +1,14 @@
+.game-results {
+  margin-bottom: 10px;
+}
+
+.game-results > div {
+  margin-bottom: 5px;
+}
+
+.timer-display {
+  position: relative;
+  top: 3px;
+  margin-left: 20px;
+  font-size: 18pt;
+}

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {PlayerModel} from "../models/playermodel";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {Router} from "@angular/router";
 declare var $: any; // This is Jquery which is brought in by a script tag in index.html
 
 @Component({
@@ -17,6 +18,7 @@ export class GameboardComponent implements OnInit {
   playersNeeded = 0;
   questionList:Array<any> = new Array<any>();
   currentQuestion = 0;
+  finalRound = 1;
   gameStarted = false;
   gameOver = false;
   currentAnswer = 'A';
@@ -25,12 +27,19 @@ export class GameboardComponent implements OnInit {
   invalidAnswer = false;
   timerValue = 10;
   answerTimer:any = null;
+  gettingGameResults = false;
+  gameResults:Array<any> = new Array<any>();
 
-  constructor(private httpClient:HttpClient) { }
+  constructor(private httpClient:HttpClient, private router:Router) { }
 
   ngOnInit(): void {
-    this.player = <PlayerModel>JSON.parse(<string>localStorage.getItem('playerinfo'));
-    this.setupSignalR();
+    if(localStorage.getItem('playerinfo') == undefined) {
+      this.router.navigate(['login']);
+    }
+    else {
+      this.player = <PlayerModel>JSON.parse(<string>localStorage.getItem('playerinfo'));
+      this.setupSignalR();
+    }
   }
 
   setupSignalR(): void {
@@ -77,7 +86,7 @@ export class GameboardComponent implements OnInit {
       if(this.timerValue <= 0) {
         this.submitAnswer();
       }
-    },1000)
+    },1000);
   }
 
   setUpJoinRoom() {
@@ -130,6 +139,7 @@ export class GameboardComponent implements OnInit {
       this.gameStarted = false;
       this.gameOver = true;
       this.invalidAnswer = true;
+      this.currentQuestion = this.questionList.length;
     }
 
     this.isAnswering = false;
@@ -137,17 +147,29 @@ export class GameboardComponent implements OnInit {
     if(this.currentQuestion + 1 >= this.questionList.length) {
       this.gameStarted = false;
       this.gameOver = true;
+      this.waitForGameResults();
     }
     else {
       this.currentQuestion++;
+      this.finalRound++;
       this.startAnswerTimer();
     }
 
     this.currentAnswer = 'A';
   }
 
-  async getGameResults():Promise<void> {
+  async waitForGameResults():Promise<void> {
+    this.gettingGameResults = true;
+    const resultsTimer = setInterval(() => {
+      this.getGameResults();
+      clearInterval(resultsTimer);
+    },15000);
+  }
 
+  async getGameResults():Promise<void> {
+    const headers = new HttpHeaders().append('Content-Type', 'application/json');
+
+    this.gameResults = await this.httpClient.get<any[]>(`${this.baseURL}Results/${this.player.GameRoomId}/${this.finalRound}`, { headers: headers }).toPromise();
   }
 }
 
